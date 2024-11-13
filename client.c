@@ -21,7 +21,7 @@ uint32_t NextPrime(uint32_t num) {
   return num;
 }
 
-int EstablishConnection(size_t id, int sock, const ClientPair* another_pair, struct sockaddr_in* another_client_addr) {
+int EstablishConnection(size_t id, int sock, in_addr_t addr, const ClientPair* another_pair, struct sockaddr_in* another_client_addr) {
   int status = 0;
   int size = 0;
 
@@ -52,6 +52,9 @@ int EstablishConnection(size_t id, int sock, const ClientPair* another_pair, str
       break;
     }
 
+    if (another_local_addr.sin_addr.s_addr == addr) {
+      continue;
+    }
     num = MAGIC_LOCAL;
     status = sendto(sock, (void*)&num, sizeof(num), 0,
                     (struct sockaddr*)&another_local_addr, len);
@@ -185,7 +188,7 @@ int main(int argc, char* argv[]) {
 
   struct sockaddr_in another_client_addr;
   printf("Try to connect to another client...\n");
-  status = EstablishConnection(id, sock, &another_pair, &another_client_addr);
+  status = EstablishConnection(id, sock, pair.local_addr, &another_pair, &another_client_addr);
   status = Communicate(id, sock, &another_client_addr);
 
   close(sock);
