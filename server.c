@@ -25,7 +25,6 @@ int AcceptClient(int sock, ClientPair* pairs, size_t* cnt_clients) {
   pair->global_port = client_sock_addr.sin_port;
 
   PrintClientPair(pair);
-  printf("\n");
 
   pkt.type = PKT_TYPE_RET_ID;
   pkt.data.id = *cnt_clients;
